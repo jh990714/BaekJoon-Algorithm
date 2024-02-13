@@ -1,5 +1,6 @@
 import sys
 from collections import deque
+from itertools import permutations
 
 input = sys.stdin.readline
 INF = sys.maxsize
@@ -74,15 +75,11 @@ while True:
             
             graph[j+1][i+1] = visited[x][y]
     
-    # 청소기부터 시작해서 모든 노드를 잇는 최소 신장 트리
-    from itertools import permutations
-
     min_distance = INF
-    for perm in permutations(range(1, len(dirty_pos)+1)):
+    for perm in permutations(range(1, len(dirty_pos)+1)): # 순열로 모든 경로를 찾음
         distance = graph[0][perm[0]] # 청소기로부터 첫 번째 더러운 칸까지의 거리
         for i in range(len(perm)-1):
             distance += graph[perm[i]][perm[i+1]] # 더러운 칸 간의 거리
         min_distance = min(min_distance, distance)
 
     print(min_distance)
-
