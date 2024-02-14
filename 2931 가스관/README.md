@@ -1,7 +1,7 @@
-### 10942번: 팰린드롭
+### 2931번: 팰린드롭
 ***
 
-https://www.acmicpc.net/problem/10942
+https://www.acmicpc.net/problem/2931
 
 <br>
 
