@@ -1,4 +1,4 @@
-### 2931번: 팰린드롭
+### 2931번: 가스관
 ***
 
 https://www.acmicpc.net/problem/2931
