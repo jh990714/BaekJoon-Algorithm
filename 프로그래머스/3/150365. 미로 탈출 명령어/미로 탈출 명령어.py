@@ -35,5 +35,3 @@ def solution(n, m, x, y, r, c, k):
     answer = bfs(n, m, x, y, r, c, k)
 
     return answer
-
-print(solution(3, 4, 2, 3, 3, 1, 5))
