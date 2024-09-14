@@ -1,22 +1,21 @@
-def dfs(idx, l, n, m, password):
-    if len(password) == l:
-        if n >= 1 and m >= 2:  # 모음 1개 이상, 자음 2개 이상
-            print(password)
-        return
-    
-    if idx >= len(kind):
+def dfs(idx, n, m, str):
+    if idx == c:
+        if len(str) == l and n >= 1 and m >= 2:
+            print(str)
+            
         return
 
-    # 현재 문자를 포함시키는 경우
-    if kind[idx] in ('a', 'e', 'i', 'o', 'u'):
-        dfs(idx + 1, l, n + 1, m, password + kind[idx])
+    if kind[idx] in vowels:
+        dfs(idx + 1, n + 1, m, str + kind[idx])
     else:
-        dfs(idx + 1, l, n, m + 1, password + kind[idx])
-    
-    # 현재 문자를 포함시키지 않는 경우
-    dfs(idx + 1, l, n, m, password)
+        dfs(idx + 1, n, m + 1, str + kind[idx])
 
+    dfs(idx + 1, n, m, str)
+    
 l, c = map(int, input().split())
 kind = sorted(input().split())
 
-dfs(0, l, 0, 0, "")
+result = []
+vowels = ['a', 'e', 'i', 'o', 'u']
+
+dfs(0, 0, 0, "")
