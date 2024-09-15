@@ -53,7 +53,6 @@ board = [list(map(int, input().split())) for _ in range(n)]
 
 left = MIN
 right = MAX
-result = 0
 
 while left < right:
     mid = (left + right) // 2
