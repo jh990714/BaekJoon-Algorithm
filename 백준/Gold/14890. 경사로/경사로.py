@@ -1,59 +1,41 @@
 n, l = map(int, input().split())
 board = [list(map(int, input().split())) for _ in range(n)]
 
-def check(road, visited):
-    stack = []
+def check(road):
+    visited = [False] * len(road)  # 경사로가 놓였는지 체크하는 리스트
 
-    idx = 0
-    while idx != len(road):
-        if not stack:
-            stack.append(road[idx])
-    
-        else:
-            if road[idx] == stack[-1]:
-                stack.append(road[idx])
-
-            elif stack[-1] - road[idx] == 1:
-                stack = []
-                stack.append(road[idx])
-
-            elif road[idx] - stack[-1] == 1:
-                if len(stack) >= l:
-                    for i in range(l):
-                        if visited[idx-i-1]:
-                            return False
-
-                        visited[idx-i-1] = True
-
-                    stack = []
-                    stack.append(road[idx])
-                else:
+    for i in range(len(road) - 1):
+        # 1. 높이 차이가 2 이상이면 경사로 불가
+        if abs(road[i] - road[i + 1]) > 1:
+            return False
+        
+        # 2. 내려가는 경사로 체크 (road[i] > road[i + 1])
+        if road[i] - road[i + 1] == 1:
+            for j in range(i + 1, i + 1 + l):
+                if j >= len(road) or road[j] != road[i + 1] or visited[j]:
                     return False
-            else:
-                return False
-
-        idx += 1
+                visited[j] = True  # 경사로 설치
+            
+        # 3. 올라가는 경사로 체크 (road[i] < road[i + 1])
+        elif road[i + 1] - road[i] == 1:
+            for j in range(i, i - l, -1):
+                if j < 0 or road[j] != road[i] or visited[j]:
+                    return False
+                visited[j] = True  # 경사로 설치
 
     return True
 
 cnt = 0
+
+# 1. 행 검사
 for row in board:
-    visited = [False] * n
-    if check(row, visited) and check(row[::-1], visited[::-1]):
+    if check(row):
         cnt += 1
 
-for col in range(len(board[0])):
-    column = [row[col] for row in board]
-    visited = [False] * n
-    if check(column, visited) and check(column[::-1], visited[::-1]):
+# 2. 열 검사
+for col in range(n):
+    column = [board[row][col] for row in range(n)]
+    if check(column):
         cnt += 1
 
 print(cnt)
-"""
-스택에 저장
-
-list[-1] == 높이 -> 스택에 저장
-list[-1] - 높이 == 1 -> 스택 비우고 높이 append
-높이 - list[-1] == 1 -> 스택 길이가 l 이상이면 지나갈 수 있음, 스택 비우고 높이 append
-
-"""
