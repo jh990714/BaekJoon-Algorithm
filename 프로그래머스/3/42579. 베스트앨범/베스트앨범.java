@@ -1,52 +1,57 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Solution {
 
     public int[] solution(String[] genres, int[] plays) {
-        HashMap<String, Integer> genreTotal = new HashMap<>();
-        HashMap<String, List<Song>> genreMap = new HashMap<>();
-        
+        Song[] songs = new Song[genres.length];
         for (int i = 0; i < genres.length; i++) {
-            genreTotal.put(genres[i], genreTotal.getOrDefault(genres[i], 0) + plays[i]);
-            
-            List<Song> songList = genreMap.getOrDefault(genres[i], new ArrayList<>());
-            
-            songList.add(new Song(i, plays[i]));
-            genreMap.put(genres[i], songList);
+            Song song = new Song(i, plays[i], genres[i]);
+            songs[i] = song;
         }
         
-        // 재생횟수 많은 장르 순으로 정렬
-        String[] sortedGenres = genreTotal.keySet().toArray(new String[0]);
-        Arrays.sort(sortedGenres, (a, b) -> genreTotal.get(b) - genreTotal.get(a));
+        Map<String, Integer> genre_plays = new HashMap<>();
+        for (Song song : songs) {
+            String genre = song.getGenre();
+            int play = song.getPlay();
+            
+            genre_plays.put(genre, genre_plays.getOrDefault(genre, 0) + play);
+        }
         
-        List<Integer> result = new ArrayList<>();
-        for (String genre : sortedGenres) {
+        List<String> sorted_genre = genre_plays.entrySet().stream()
+                                .sorted((e1, e2) -> e2.getValue() - e1.getValue())
+                                .map(Map.Entry::getKey)
+                                .collect(Collectors.toList());
+        
+        List<Integer> answers = new ArrayList<>();
+        for (String genre : sorted_genre) {
+            List<Song> genreSongs = Arrays.stream(songs)
+                    .filter(song -> song.getGenre().equals(genre))
+                    .sorted((s1, s2) -> s2.getPlay() - s1.getPlay())
+                    .collect(Collectors.toList());
             
-            // 장르별 노래들 재생 횟수 내림차순 정렬
-            List<Song> genreSongs = genreMap.get(genre);
-            genreSongs.sort((a, b) -> b.play - a.play);
-            
-            // 가장 많이 재생된 2곡을 결과에 추가
-            for (int i = 0; i < Math.min(2, genreSongs.size()); i++) {
-                result.add(genreSongs.get(i).id);
-            }
+            genreSongs.stream()
+                  .limit(2)
+                  .map(Song::getId)
+                  .forEach(answers::add);
         }
-
-        int[] answer = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            answer[i] = result.get(i);
-        }
-
-        return answer;
+        
+        return answers.stream().mapToInt(Integer::intValue).toArray();
     }
 }
 
 class Song {
     int id;
     int play;
+    String genre;
     
-    Song(int id, int play) {
+    Song(int id, int play, String genre) {
         this.id = id;
         this.play = play;
+        this.genre = genre;
     }
+    
+    public int getId() { return this.id; }
+    public int getPlay() { return this.play; }
+    public String getGenre() { return this.genre; }
 }
